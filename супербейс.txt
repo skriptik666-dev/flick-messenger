@@ -1,0 +1,52 @@
+# ИНСТРУКЦИЯ ПО НАСТРОЙКЕ SUPABASE
+
+Чтобы заработала загрузка картинок, голосовых сообщений и файлов, нужно создать бесплатный проект на Supabase и прислать мне следующие данные.
+
+1. Зайдите на https://supabase.com/ и нажмите "Start your project" (войдите через GitHub).
+2. Создайте новый проект (New Project):
+   - Name: Flick Messenger
+   - Database Password: придумайте любой сложный пароль (запишите его, но мне он не нужен).
+   - Region: выберите ближайший (например, Frankfurt).
+   - Нажмите "Create new project". Подождите пару минут, пока он создается.
+
+---
+
+### ЧТО МНЕ НУЖНО ПРИСЛАТЬ (ПУНКТЫ 3 и 4):
+
+3. **Project URL - https://yypehvatwtmwtrzuqwpc.supabase.co
+   
+
+4. **API Key (Anon / Public) - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGVodmF0d3Rtd3RyenVxd3BjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2MDQ4NjMsImV4cCI6MjA4NTE4MDg2M30.Q74-YquiLtGFR1qDkLO6tcoihSrXdhaQsMcQXjcDFyI
+
+
+### ВАЖНЫЕ НАСТРОЙКИ (Сделайте это сами, чтобы заработало):
+
+5. **Создание хранилища (Storage)**
+   - В левом меню выберите значок папки (Storage).
+   - Нажмите "Create a new bucket".
+   - Name of bucket: `flick-uploads` (ОБЯЗАТЕЛЬНО ИМЕННО ТАК).
+   - Public bucket: **Включите** эту галочку (переключатель должен быть зеленым).
+   - Нажмите "Save".
+
+6. **Настройка Policies (Прав доступа)**
+   - Зайдите в созданный бакет `flick-uploads`.
+   - Перейдите во вкладку "Configuration" (или "Policies").
+   - Нажмите "New Policy" (в разделе Policies).
+   - Выберите "For full customization".
+   - Name: `Allow all`
+   - Allowed operations: поставьте галочки на **ALL** (SELECT, INSERT, UPDATE, DELETE).
+   - Target roles: выберите `anon` и `authenticated`.
+   - Нажмите "Review" -> "Save".
+   *(Это сделает хранилище открытым для всех пользователей приложения, что нормально для теста).*
+
+7. **Настройка CORS (Чтобы работало с вашего IP) - не нашел
+   
+
+---
+
+**ИТОГ:**
+Пришлите мне только:
+1. URL проекта (из пункта 3)
+2. Anon Key (из пункта 4)
+
+Я вставлю их в код, и загрузка файлов заработает.

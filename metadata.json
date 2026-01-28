@@ -1,0 +1,8 @@
+{
+  "name": "Flick Messenger",
+  "description": "A modern, premium all-in-one web messenger with fluid animations, secure architecture, and seamless PWA support.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

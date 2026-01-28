@@ -1,0 +1,111 @@
+# Архитектура Базы Данных для мессенджера "Flick"
+
+## Описание
+Ниже приведена структура базы данных для современного веб-мессенджера.
+Используемая концепция: Реляционная модель (подходит для QuintaDB, PostgreSQL, MySQL).
+
+---
+
+## 1. Таблица: Users (Пользователи)
+Хранит информацию о профиле пользователя.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| id | UUID / String | Уникальный идентификатор (PK) |
+| email | String | Email для входа (Уникальный) |
+| username | String | Отображаемое имя |
+| friend_code | String | Уникальный 6-значный код для поиска (Index) |
+| avatar_url | String (URL) | Ссылка на аватар (CDN) |
+| bio | Text | Описание профиля (status msg) |
+| status | Enum | ONLINE, OFFLINE, BUSY, AWAY |
+| last_seen | Timestamp | Время последней активности |
+| created_at | Timestamp | Дата регистрации |
+| password_hash | String | Хеш пароля (если используется auth по паролю) |
+
+---
+
+## 2. Таблица: Chats (Чаты)
+Хранит метаданные о диалогах.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| id | UUID / String | Уникальный идентификатор (PK) |
+| is_group | Boolean | Личный чат (false) или группа (true) |
+| name | String | Название чата (для групп) |
+| avatar_url | String (URL) | Аватар чата (для групп) |
+| created_at | Timestamp | Дата создания |
+| updated_at | Timestamp | Дата последнего сообщения (для сортировки) |
+
+---
+
+## 3. Таблица: Chat_Members (Участники чатов)
+Связывает пользователей с чатами (Many-to-Many).
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| chat_id | UUID | Ссылка на таблицу Chats (FK) |
+| user_id | UUID | Ссылка на таблицу Users (FK) |
+| role | Enum | ADMIN, MEMBER |
+| joined_at | Timestamp | Дата вступления |
+
+---
+
+## 4. Таблица: Messages (Сообщения)
+Основное хранилище переписки.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| id | UUID / String | Уникальный идентификатор (PK) |
+| chat_id | UUID | Ссылка на таблицу Chats (FK) |
+| sender_id | UUID | Ссылка на таблицу Users (FK) |
+| content | Text | Текст сообщения (может быть пустым, если есть вложение) |
+| type | Enum | TEXT, IMAGE, VIDEO, VOICE, FILE, SYSTEM |
+| reply_to_id | UUID | ID сообщения, на которое отвечают (Self-ref FK) |
+| is_deleted | Boolean | Soft delete флаг |
+| created_at | Timestamp | Время отправки |
+
+---
+
+## 5. Таблица: Attachments (Вложения)
+Файлы, прикрепленные к сообщениям.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| id | UUID / String | Уникальный идентификатор (PK) |
+| message_id | UUID | Ссылка на таблицу Messages (FK) |
+| file_url | String (URL) | Ссылка на файл в облачном хранилище (R2/S3) |
+| file_type | Enum | IMAGE, VIDEO, AUDIO, DOCUMENT |
+| mime_type | String | Например, 'image/jpeg', 'audio/webm' |
+| file_size | Integer | Размер в байтах |
+| file_name | String | Оригинальное имя файла |
+
+---
+
+## 6. Таблица: Message_Reads (Прочтения)
+Статусы прочтения сообщений.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| message_id | UUID | Ссылка на сообщение |
+| user_id | UUID | Кто прочитал |
+| read_at | Timestamp | Время прочтения |
+
+---
+
+## 7. Таблица: Contacts (Контакты/Друзья)
+Список друзей пользователя.
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| user_id | UUID | Кто добавил (Initiator) |
+| friend_id | UUID | Кого добавили (Target) |
+| status | Enum | PENDING, ACCEPTED, BLOCKED |
+| created_at | Timestamp | Дата запроса |
+
+---
+
+## Инструкция для QuintaDB (или NoSQL решений)
+Если используется QuintaDB:
+1. Создайте формы для каждой таблицы выше.
+2. Используйте поле "Relationship" (Связь) для реализации FK (Foreign Keys).
+3. Для `Message_Reads` можно использовать под-форму или хранить массив ID прочитавших внутри записи сообщения (если нагрузка невелика), но лучше отдельной таблицей для масштабируемости.
