@@ -1,0 +1,21 @@
+{
+  "name": "Flick Messenger",
+  "short_name": "Flick",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://ui-avatars.com/api/?name=Flick&background=ec4899&color=fff&size=192&rounded=true&bold=true",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://ui-avatars.com/api/?name=Flick&background=ec4899&color=fff&size=512&rounded=true&bold=true",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
